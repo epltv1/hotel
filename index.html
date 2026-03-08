@@ -1,64 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Embed Generator</title>
+    <title>Embed Server</title>
+    <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-        .box { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        input { display: block; width: 100%; margin: 10px 0; padding: 8px; }
-        .list-item { background: #fff; padding: 10px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; }
+        body { margin: 0; padding: 20px; font-family: sans-serif; background: #000; color: #fff; }
+        #dashboard { display: block; max-width: 600px; margin: auto; }
+        #player-wrapper { display: none; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; }
+        input { display: block; width: 100%; margin: 10px 0; padding: 10px; border-radius: 5px; }
+        button { padding: 10px 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h3>Create New Embed</h3>
-    <input type="text" id="title" placeholder="Title (e.g., Football Match 1)">
-    <input type="text" id="m3u8" placeholder="Paste M3U8 Link Here">
-    <button onclick="generate()">Get Embed URL</button>
+<div id="dashboard">
+    <h1>Embed Generator</h1>
+    <input type="text" id="title" placeholder="Title for reference">
+    <input type="text" id="m3u8" placeholder="Paste M3U8 Link">
+    <button onclick="saveLink()">Generate Embed URL</button>
+    <div id="embedList"></div>
 </div>
 
-<div id="embedList"></div>
+<div id="player-wrapper"><div id="player"></div></div>
 
 <script>
-    function generate() {
+    const params = new URLSearchParams(window.location.search);
+    const videoId = params.get('id');
+
+    // 1. PLAYER MODE: If ID exists, hide dashboard and play video
+    if (videoId) {
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('player-wrapper').style.display = 'block';
+        
+        // Fetch your shared links from your GitHub repository
+        fetch('links.json')
+            .then(res => res.json())
+            .then(data => {
+                const entry = data.find(item => item.id === videoId);
+                if (entry) {
+                    jwplayer("player").setup({
+                        file: entry.url,
+                        width: "100%",
+                        height: "100%",
+                        autostart: true
+                    });
+                } else {
+                    document.body.innerHTML = "<h1>Video not found</h1>";
+                }
+            });
+    }
+
+    // 2. DASHBOARD MODE: Functions to help you manage links
+    function saveLink() {
         const title = document.getElementById('title').value;
         const url = document.getElementById('m3u8').value;
-        const id = Math.random().toString(36).substring(7); // Random code like 'eujz1'
-        const embedObj = { title, id, url };
-        
-        let list = JSON.parse(localStorage.getItem('myEmbeds') || '[]');
-        list.push(embedObj);
-        localStorage.setItem('myEmbeds', JSON.stringify(list));
-        renderList();
+        const id = Math.random().toString(36).substring(7);
+        alert("Copy this to your links.json file:\n\n{ \"title\": \"" + title + "\", \"id\": \"" + id + "\", \"url\": \"" + url + "\" }");
     }
-
-    function renderList() {
-        const list = JSON.parse(localStorage.getItem('myEmbeds') || '[]');
-        const container = document.getElementById('embedList');
-        container.innerHTML = '<h3>Your Embeds</h3>';
-        
-        list.forEach((item, index) => {
-            const embedLink = `https://your-embed-server.vercel.app/?id=${item.id}`;
-            container.innerHTML += `
-                <div class="list-item">
-                    <span><strong>${item.title}</strong><br>${embedLink}</span>
-                    <button onclick="copy('${embedLink}')">Copy</button>
-                    <button onclick="del(${index})" style="color:red">Delete</button>
-                </div>
-            `;
-        });
-    }
-
-    function copy(text) { navigator.clipboard.writeText(text); alert('Copied!'); }
-    function del(index) {
-        let list = JSON.parse(localStorage.getItem('myEmbeds'));
-        list.splice(index, 1);
-        localStorage.setItem('myEmbeds', JSON.stringify(list));
-        renderList();
-    }
-
-    renderList();
 </script>
 </body>
 </html>
