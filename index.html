@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
+    <style>body { margin: 0; padding: 0; background: #000; }</style>
+</head>
+<body>
+    <div id="player"></div>
+    <script>
+        // Get the video ID from the URL (e.g., /?id=match1)
+        const params = new URLSearchParams(window.location.search);
+        const videoId = params.get('id');
+
+        // Security Check: Only allow if the parent site is yours
+        // This stops people from putting your iframe on their own sites
+        if (window.self !== window.top && !document.referrer.includes("futbol-x.xyz")) {
+            document.body.innerHTML = "<h1>Unauthorized Access</h1>";
+        } else {
+            jwplayer("player").setup({
+                file: "YOUR_SECURE_M3U8_LINK", // Or fetch this via an API route
+                width: "100%",
+                aspectratio: "16:9",
+                autostart: true
+            });
+        }
+    </script>
+</body>
+</html>
