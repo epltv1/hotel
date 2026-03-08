@@ -1,28 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
-    <style>body { margin: 0; padding: 0; background: #000; }</style>
+    <title>Embed Generator</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .box { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        input { display: block; width: 100%; margin: 10px 0; padding: 8px; }
+        .list-item { background: #fff; padding: 10px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; }
+    </style>
 </head>
 <body>
-    <div id="player"></div>
-    <script>
-        // Get the video ID from the URL (e.g., /?id=match1)
-        const params = new URLSearchParams(window.location.search);
-        const videoId = params.get('id');
 
-        // Security Check: Only allow if the parent site is yours
-        // This stops people from putting your iframe on their own sites
-        if (window.self !== window.top && !document.referrer.includes("futbol-x.xyz")) {
-            document.body.innerHTML = "<h1>Unauthorized Access</h1>";
-        } else {
-            jwplayer("player").setup({
-                file: "YOUR_SECURE_M3U8_LINK", // Or fetch this via an API route
-                width: "100%",
-                aspectratio: "16:9",
-                autostart: true
-            });
-        }
-    </script>
+<div class="box">
+    <h3>Create New Embed</h3>
+    <input type="text" id="title" placeholder="Title (e.g., Football Match 1)">
+    <input type="text" id="m3u8" placeholder="Paste M3U8 Link Here">
+    <button onclick="generate()">Get Embed URL</button>
+</div>
+
+<div id="embedList"></div>
+
+<script>
+    function generate() {
+        const title = document.getElementById('title').value;
+        const url = document.getElementById('m3u8').value;
+        const id = Math.random().toString(36).substring(7); // Random code like 'eujz1'
+        const embedObj = { title, id, url };
+        
+        let list = JSON.parse(localStorage.getItem('myEmbeds') || '[]');
+        list.push(embedObj);
+        localStorage.setItem('myEmbeds', JSON.stringify(list));
+        renderList();
+    }
+
+    function renderList() {
+        const list = JSON.parse(localStorage.getItem('myEmbeds') || '[]');
+        const container = document.getElementById('embedList');
+        container.innerHTML = '<h3>Your Embeds</h3>';
+        
+        list.forEach((item, index) => {
+            const embedLink = `https://your-embed-server.vercel.app/?id=${item.id}`;
+            container.innerHTML += `
+                <div class="list-item">
+                    <span><strong>${item.title}</strong><br>${embedLink}</span>
+                    <button onclick="copy('${embedLink}')">Copy</button>
+                    <button onclick="del(${index})" style="color:red">Delete</button>
+                </div>
+            `;
+        });
+    }
+
+    function copy(text) { navigator.clipboard.writeText(text); alert('Copied!'); }
+    function del(index) {
+        let list = JSON.parse(localStorage.getItem('myEmbeds'));
+        list.splice(index, 1);
+        localStorage.setItem('myEmbeds', JSON.stringify(list));
+        renderList();
+    }
+
+    renderList();
+</script>
 </body>
 </html>
