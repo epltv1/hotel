@@ -4,8 +4,8 @@
     <title>Embed Server</title>
     <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
     <style>
-        body { margin: 0; padding: 20px; font-family: sans-serif; background: #000; color: #fff; }
-        #dashboard { display: block; max-width: 600px; margin: auto; }
+        body { margin: 0; padding: 0; background: #000; font-family: sans-serif; color: #fff; }
+        #dashboard { padding: 20px; max-width: 600px; margin: auto; }
         #player-wrapper { display: none; width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; }
         input { display: block; width: 100%; margin: 10px 0; padding: 10px; border-radius: 5px; }
         button { padding: 10px 20px; cursor: pointer; }
@@ -24,15 +24,18 @@
 <div id="player-wrapper"><div id="player"></div></div>
 
 <script>
+    // SECURITY GATE: Redirect if not in an iframe or on unauthorized domain
+    if (window.self === window.top || !document.referrer.includes("futbol-x.xyz")) {
+        window.location.replace("https://futbol-x.xyz");
+    }
+
     const params = new URLSearchParams(window.location.search);
     const videoId = params.get('id');
 
-    // 1. PLAYER MODE: If ID exists, hide dashboard and play video
     if (videoId) {
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('player-wrapper').style.display = 'block';
         
-        // Fetch your shared links from your GitHub repository
         fetch('links.json')
             .then(res => res.json())
             .then(data => {
@@ -50,7 +53,6 @@
             });
     }
 
-    // 2. DASHBOARD MODE: Functions to help you manage links
     function saveLink() {
         const title = document.getElementById('title').value;
         const url = document.getElementById('m3u8').value;
