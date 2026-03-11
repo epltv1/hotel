@@ -1,17 +1,42 @@
 [
   {
-    "title": "Match 1",
-    "id": "4n7ph",
-    "url": "https://premium.futbol-tv.online/ars/index.m3u8"
+    "title": "Premier League: Match 1",
+    "id": "v7n2q",
+    "url": "https://premium.futbol-tv.online/city/index.m3u8"
   },
   {
-    "title": "Match 2",
-    "id": "a8b9c",
-    "url": "https://premium.futbol-tv.online/atle/index.m3u8"
+    "title": "La Liga: Match 2",
+    "id": "k9m4p",
+    "url": "https://premium.futbol-tv.online/ps/index.m3u8"
   },
   {
-    "title": "Match 3",
-    "id": "xhso1",
-    "url": "https://premium.futbol-tv.online/w/index.m3u8"
+    "title": "Champions League: Match 3",
+    "id": "b3r8w",
+    "url": "https://premium.futbol-tv.online/che/index.m3u8"
+  },
+  {
+    "title": "NBA: Game 1",
+    "id": "f5t1z",
+    "url": "https://premium.futbol-tv.online/bd/index.m3u8"
+  },
+  {
+    "title": "F1: Session 1",
+    "id": "h2j9x",
+    "url": "https://premium.futbol-tv.online/test5/index.m3u8"
+  },
+  {
+    "title": "Ligue 1: Match 4",
+    "id": "s7v3c",
+    "url": "https://premium.futbol-tv.online/test6/index.m3u8"
+  },
+  {
+    "title": "Serie A: Match 5",
+    "id": "y4n8k",
+    "url": "https://premium.futbol-tv.online/test7/index.m3u8"
+  },
+  {
+    "title": "NBA: Game 2",
+    "id": "d1g6q",
+    "url": "https://premium.futbol-tv.online/test8/index.m3u8"
   }
 ]
